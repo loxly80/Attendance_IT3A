@@ -16,6 +16,5 @@ namespace Attendance_IT3A
         {
             InitializeComponent();
         }
-
     }
 }
