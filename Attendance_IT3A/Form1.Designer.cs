@@ -167,7 +167,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(886, 534);
+            this.ClientSize = new System.Drawing.Size(925, 539);
             this.Controls.Add(this.btnDoctorEnd);
             this.Controls.Add(this.btnDoctorStart);
             this.Controls.Add(this.btnPauseEnd);
@@ -182,6 +182,7 @@
             this.Controls.Add(this.lboxAll);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

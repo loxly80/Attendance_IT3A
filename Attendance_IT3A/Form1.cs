@@ -72,7 +72,7 @@ namespace Attendance_IT3A
             btnShiftStop.Enabled = enabled;
         }
 
-        private void btnShiftStart_Click(object sender, EventArgs e)
+        private void SetPersonAction(RecordReason recordReason)
         {
             int index = lboxPerson.SelectedIndex;
             if (index >= 0)
@@ -81,7 +81,7 @@ namespace Attendance_IT3A
                 {
                     DateTime = DateTime.Now,
                     Person = people[index],
-                    Reason = RecordReason.StartShift
+                    Reason = recordReason
                 };
                 records.Add(newRecord);
                 people[index].Records.Add(newRecord);
@@ -89,27 +89,37 @@ namespace Attendance_IT3A
             }
         }
 
+        private void btnShiftStart_Click(object sender, EventArgs e)
+        {
+            SetPersonAction(RecordReason.StartShift);
+        }
+
         private void btnShiftStop_Click(object sender, EventArgs e)
         {
-
+            SetPersonAction(RecordReason.EndShift);
         }
 
         private void btnPauseStart_Click(object sender, EventArgs e)
         {
-
+            SetPersonAction(RecordReason.StartPause);
         }
 
         private void btnPauseEnd_Click(object sender, EventArgs e)
         {
-
+            SetPersonAction(RecordReason.EndPause);
         }
 
         private void btnDoctorStart_Click(object sender, EventArgs e)
         {
-
+            SetPersonAction(RecordReason.StartDoctor);
         }
 
         private void btnDoctorEnd_Click(object sender, EventArgs e)
+        {
+            SetPersonAction(RecordReason.EndDoctor);
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
         {
 
         }
