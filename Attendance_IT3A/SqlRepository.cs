@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Text;
 
 namespace Attendance_IT3A
 {
     public class SqlRepository
     {
+        private string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog = Attendance_IT3A; Integrated Security = True; Connect Timeout = 30; Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+
         private List<Person> TempPeople()
         {
             List<Person> people = new List<Person>();
@@ -32,7 +35,16 @@ namespace Attendance_IT3A
 
         public List<Person> GetPeople()
         {
-            return TempPeople();
+            List<Person> people = new List<Person>();
+
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+
+                sqlConnection.Close();
+            }
+
+            return people;
         }
     }
 }
