@@ -246,7 +246,7 @@ ServiceFabricBackup/
 *.rptproj.bak
 
 # SQL Server files
-*.mdf
+#*.mdf
 *.ldf
 *.ndf
 
@@ -338,3 +338,4 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+/Database/Attendance_IT3A.mdf

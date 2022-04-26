@@ -35,16 +35,61 @@ namespace Attendance_IT3A
 
         public List<Person> GetPeople()
         {
-            List<Person> people = new List<Person>();
-
+            List<Person> people = new List<Person>();            
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
             {
                 sqlConnection.Open();
-
+                using(SqlCommand sqlCommand = new SqlCommand("select * from Person",sqlConnection))
+                {
+                    using(SqlDataReader dataReader = sqlCommand.ExecuteReader())
+                    {
+                        while (dataReader.Read())
+                        {
+                            people.Add(new Person()
+                            {
+                                Id = Convert.ToInt32(dataReader["IdPerson"]),
+                                Firstname = dataReader["FirstName"].ToString(),
+                                Lastname = dataReader["LastName"].ToString(),
+                                PersonalNumber = dataReader["PersonalNumber"].ToString(),
+                                ChipId = dataReader["ChipId"].ToString()
+                            });
+                        }
+                    }
+                }
                 sqlConnection.Close();
             }
+            var records = GetRecords();
 
             return people;
         }
+
+        private List<Record> GetRecords()
+        {
+            List<Record> records = new List<Record>();
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                using (SqlCommand sqlCommand = new SqlCommand("select * from Record", sqlConnection))
+                {
+                    using (SqlDataReader dataReader = sqlCommand.ExecuteReader())
+                    {
+                        while (dataReader.Read())
+                        {
+                            records.Add(new Record()
+                            {
+                                Id = Convert.ToInt32(dataReader["IdPerson"]),
+                                DateTime = Convert.ToDateTime(dataReader["FirstName"].ToString()),
+                                Reason = (RecordReason)Convert.ToInt32(dataReader["LastName"].ToString()),
+                                Guid = Guid.Parse(dataReader["PersonalNumber"].ToString())                                
+                            });
+                        }
+                    }
+                }
+                sqlConnection.Close();
+            }
+            return records;
+        }
+
+
     }
 }
