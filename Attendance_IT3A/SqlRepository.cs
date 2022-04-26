@@ -58,12 +58,12 @@ namespace Attendance_IT3A
                 }
                 sqlConnection.Close();
             }
-            var records = GetRecords();
+            var records = GetRecords(people);
 
             return people;
         }
 
-        private List<Record> GetRecords()
+        private List<Record> GetRecords(Dictionary<int,Person> people)
         {
             List<Record> records = new List<Record>();
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
@@ -75,13 +75,16 @@ namespace Attendance_IT3A
                     {
                         while (dataReader.Read())
                         {
-                            records.Add(new Record()
+                            var record = new Record()
                             {
-                                Id = Convert.ToInt32(dataReader["IdPerson"]),
-                                DateTime = Convert.ToDateTime(dataReader["FirstName"].ToString()),
-                                Reason = (RecordReason)Convert.ToInt32(dataReader["LastName"].ToString()),
-                                Guid = Guid.Parse(dataReader["PersonalNumber"].ToString())                                
-                            });
+                                Id = Convert.ToInt32(dataReader["IdRecord"]),
+                                DateTime = Convert.ToDateTime(dataReader["DateTime"].ToString()),
+                                Reason = (RecordReason)Convert.ToInt32(dataReader["Reason"].ToString()),
+                                Guid = Guid.Parse(dataReader["Guid"].ToString()),
+                                Person = people[Convert.ToInt32(dataReader["IdPerson"])]
+                            };
+                            record.Person?.Records.Add(record);
+                            records.Add(record);
                         }
                     }
                 }
@@ -90,6 +93,56 @@ namespace Attendance_IT3A
             return records;
         }
 
+        public void SavePerson()
+        {
+        }
 
+        public void SaveRecord(Record record)
+        {
+            if (record.Id == 0)
+            {
+                InsertRecord(record);
+            }
+            else
+            {
+                UpdateRecord(record);
+            }
+        }
+
+        private void UpdateRecord(Record record)
+        {
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                using (SqlCommand sqlCommand = new SqlCommand("", sqlConnection))
+                {
+                    sqlCommand.CommandText = $"update Record set Reason=@Reason,DateTime=@DateTime,IdPerson=@IdPerson where IdRecord={record.Id}";
+                    sqlCommand.Parameters.AddWithValue("Reason", record.Reason);
+                    sqlCommand.Parameters.AddWithValue("DateTime", record.DateTime);
+                    sqlCommand.Parameters.AddWithValue("IdPerson", record.Id);
+                    sqlCommand.ExecuteNonQuery();
+                }
+                sqlConnection.Close();
+            }
+        }
+
+        private void InsertRecord(Record record)
+        {
+            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            {
+                sqlConnection.Open();
+                using (SqlCommand sqlCommand = new SqlCommand("", sqlConnection))
+                {
+                    sqlCommand.CommandText = "insert into Record(Reason,DateTime,Guid,IdPerson) values(@Reason,@DateTime,@Guid,@IdPerson);";
+                    sqlCommand.CommandText += " select top 1 IdRecord from Record where Guid=@Guid";
+                    sqlCommand.Parameters.AddWithValue("Reason",record.Reason);
+                    sqlCommand.Parameters.AddWithValue("DateTime", record.DateTime);
+                    sqlCommand.Parameters.AddWithValue("Guid", record.Guid);
+                    sqlCommand.Parameters.AddWithValue("IdPerson", record.Person.Id);
+                    record.Id =  Convert.ToInt32(sqlCommand.ExecuteScalar());
+                }
+                sqlConnection.Close();
+            }
+        }
     }
 }

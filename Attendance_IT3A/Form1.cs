@@ -81,10 +81,12 @@ namespace Attendance_IT3A
                 {
                     DateTime = DateTime.Now,
                     Person = people[index],
-                    Reason = recordReason
+                    Reason = recordReason,
+                    Guid = Guid.NewGuid()
                 };
                 records.Add(newRecord);
                 people[index].Records.Add(newRecord);
+                SqlRepository.SaveRecord(newRecord);
                 RefreshGUI();
             }
         }
